@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sarahah_chat/ui/screens/ChatScreen.dart';
+import 'package:sarahah_chat/ui/widgets/BottomNavItem.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
-      home: ChatScreen(),
+      home: BottomNavItem(),
     );
   }
 }
