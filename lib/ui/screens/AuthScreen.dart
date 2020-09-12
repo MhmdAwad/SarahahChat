@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sarahah_chat/models/UserInformation.dart';
 import 'package:sarahah_chat/ui/widgets/TextFormWidget.dart';
 
 class AuthScreen extends StatelessWidget {
@@ -64,10 +66,17 @@ class _AuthCardState extends State<AuthCard> {
       if (isLogin)
         await _authInstance.signInWithEmailAndPassword(
             email: _emailController.text, password: _passwordController.text);
-      else
-        await _authInstance.createUserWithEmailAndPassword(
+      else {
+        final authUser = await _authInstance.createUserWithEmailAndPassword(
             email: _emailController.text, password: _passwordController.text);
-    }catch(err){
+        final user = UserInformation(_userNameController.text,
+            _emailController.text, authUser.user.uid, "");
+        await FirebaseFirestore.instance
+            .collection("Users")
+            .doc(user.uid)
+            .set(user.toMap());
+      }
+    } catch (err) {
       _showErrorDialog();
     }
   }
