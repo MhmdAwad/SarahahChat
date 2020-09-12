@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sarahah_chat/ui/screens/ChatScreen.dart';
 import 'package:sarahah_chat/ui/screens/FindScreen.dart';
@@ -23,6 +24,30 @@ class _BottomNavItemState extends State<BottomNavItem> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_widgetsList[_widgetIndex]["title"]),
+        actions: [
+          DropdownButton(
+            icon: Icon(Icons.more_vert, color: Colors.white,),
+            items: [
+              DropdownMenuItem(
+                child: Container(
+                  child: Row(
+                    children: [
+                      Icon(Icons.exit_to_app),
+                      SizedBox(width: 10,),
+                      Text("Logout")
+                    ],
+                  ),
+                ),
+                value: "logout",
+              ),
+            ],
+            onChanged: (val){
+              if(val == "logout")
+                FirebaseAuth.instance.signOut();
+            },
+          ),
+          SizedBox(width: 10,),
+        ],
       ),
       body: _widgetsList[_widgetIndex]["body"],
       bottomNavigationBar: BottomNavigationBar(
