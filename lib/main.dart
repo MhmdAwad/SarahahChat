@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sarahah_chat/ui/screens/AccountScreen.dart';
 import 'package:sarahah_chat/ui/screens/AuthScreen.dart';
+import 'package:sarahah_chat/ui/screens/ConversationScreen.dart';
 import 'package:sarahah_chat/ui/widgets/BottomNavItem.dart';
 
 void main() async {
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
           builder: (ctx, snapshot) =>
               snapshot.hasData ? BottomNavItem() : AuthScreen()),
       routes: {
-        AccountScreen.ROUTE_NAME: (ctx) => AccountScreen()
+        AccountScreen.ROUTE_NAME: (ctx) => AccountScreen(),
+        ConversationScreen.ROUTE_NAME: (ctx)=> ConversationScreen(),
       },
     );
   }

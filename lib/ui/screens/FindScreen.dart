@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:sarahah_chat/ui/screens/ConversationScreen.dart';
 import 'package:sarahah_chat/ui/widgets/TextFormWidget.dart';
 
 enum FindStatus { FAILED, SUCCESS }
@@ -129,8 +130,10 @@ class _FindScreenState extends State<FindScreen> {
                               FirebaseAuth.instance.currentUser.uid,
                               foundUserUid
                             ],
-                          }).then((value) =>
-                              print("SS ${value.id}  == ${value.path}"));
+                            "receivedUsername":foundUsername,
+                            "receivedUserUid": foundUserUid,
+                          }).then((value) => Navigator.of(context).pushNamed(ConversationScreen.ROUTE_NAME,
+                          arguments: value.id));
                         },
                       ),
                     )
