@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:sarahah_chat/models/UserInformation.dart';
+import 'package:sarahah_chat/ui/widgets/PickImageWidget.dart';
 import 'package:sarahah_chat/ui/widgets/TextFormWidget.dart';
 
 class AuthScreen extends StatelessWidget {
@@ -42,7 +45,7 @@ class _AuthCardState extends State<AuthCard> {
   var isLoading = false;
   var expand = false;
   var isLogin = true;
-  String userImage;
+  File userImage;
 
   void changeCardHeight(bool changeExpand) {
     if (expand != changeExpand)
@@ -75,7 +78,7 @@ class _AuthCardState extends State<AuthCard> {
             _userNameController.text,
             _emailController.text,
             authUser.user.uid,
-            "",
+            await _uploadUserImage(authUser.user.uid),
             "${_userNameController.text}@${authUser.user.uid.substring(0, 6)}.sarhah");
         await FirebaseFirestore.instance
             .collection("Users")
@@ -86,6 +89,19 @@ class _AuthCardState extends State<AuthCard> {
       _showErrorDialog();
     }
   }
+  Future<String> _uploadUserImage(String uid) async{
+    if(userImage == null)
+      return "";
+
+    final ref = FirebaseStorage.instance.ref().child("users").child("$uid.jpg");
+    await ref.putFile(userImage).onComplete;
+    final url = await ref.getDownloadURL();
+    return url;
+  }
+
+  void pickedImage(File image){
+    userImage = image;
+  }
 
   void _changeLoginStatus() {
     setState(() {
@@ -94,37 +110,7 @@ class _AuthCardState extends State<AuthCard> {
     changeCardHeight(true);
   }
 
-  void pickImage(ImageSource selectedSource) {
-    ImagePicker.platform.pickImage(source: selectedSource).then((value) {
-      if (value == null) return;
-      print(value);
 
-    });
-  }
-
-  void chooseImage() {
-    showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: Text("Pick Image"),
-              actions: [
-                FlatButton(
-                  child: Text("From Camera"),
-                  onPressed: () {
-                    pickImage(ImageSource.camera);
-                    Navigator.of(ctx).pop();
-                  },
-                ),
-                FlatButton(
-                  child: Text("From Gallery"),
-                  onPressed: () {
-                    pickImage(ImageSource.gallery);
-                    Navigator.of(ctx).pop();
-                  },
-                )
-              ],
-            ));
-  }
 
   void _showErrorDialog() {
     showDialog(
@@ -161,13 +147,7 @@ class _AuthCardState extends State<AuthCard> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  if (!isLogin)
-                    GestureDetector(
-                      child: CircleAvatar(
-                        radius: 60,
-                      ),
-                      onTap: chooseImage,
-                    ),
+                  if (!isLogin) PickImageWidget(pickedImage),
                   TextFormWidget(
                     "Email:",
                     _emailController,
@@ -252,4 +232,6 @@ class _AuthCardState extends State<AuthCard> {
       ),
     );
   }
+
+
 }
