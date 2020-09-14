@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:sarahah_chat/ui/screens/ConversationScreen.dart';
 
 class ChatScreen extends StatelessWidget {
+  static const ROUTE_NAME = "ChatScreen";
   final myUid = FirebaseAuth.instance.currentUser.uid;
 
   @override

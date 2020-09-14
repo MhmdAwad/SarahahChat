@@ -26,12 +26,12 @@ class _FindScreenState extends State<FindScreen> {
     });
   }
 
-  void _showErrorDialog() {
+  void _showErrorDialog(String errorMsg) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('An Error Occurred!'),
-        content: Text("user link in invalid."),
+        content: Text(errorMsg),
         actions: <Widget>[
           FlatButton(
             child: Text('Ok'),
@@ -53,7 +53,7 @@ class _FindScreenState extends State<FindScreen> {
         .then((value) {
       if (value.docs.length == 0) {
         _changeLoading(FindStatus.FAILED);
-        _showErrorDialog();
+        _showErrorDialog("user link in invalid.");
       } else {
         foundUsername = value.docs[0].data()['username'];
         foundUserUid = value.docs[0].data()['uid'];
@@ -61,6 +61,47 @@ class _FindScreenState extends State<FindScreen> {
         _changeLoading(FindStatus.SUCCESS);
       }
     });
+  }
+
+  void createChat() async {
+    if (foundUserUid == FirebaseAuth.instance.currentUser.uid) {
+      _showErrorDialog("You can't chat to yourself!");
+      return;
+    }
+    final myUid = FirebaseAuth.instance.currentUser.uid;
+    String existChat = await checkChatExist();
+    if(existChat != null){
+      Navigator.of(context).pushNamed(ConversationScreen.ROUTE_NAME, arguments: existChat);
+      return;
+    }
+    FirebaseFirestore.instance.collection("Chats").add({
+      "users": [
+        myUid,
+        foundUserUid
+      ],
+      "receivedUsername":foundUsername,
+      "receivedUserUid": foundUserUid,
+    }).then((value) => Navigator.of(context).pushNamed(ConversationScreen.ROUTE_NAME,
+        arguments: value.id));
+  }
+
+  Future<String> checkChatExist()async{
+    String existChat;
+    final data = await FirebaseFirestore.instance
+        .collection("Chats")
+        .where(
+      "users",
+      arrayContains: FirebaseAuth.instance.currentUser.uid,
+    ).get();
+
+    for(var element in data.docs){
+      if (element.data()['users'][0] == foundUserUid ||
+          element.data()['users'][1] == foundUserUid) {
+        existChat = element.id;
+        break;
+      }
+    }
+    return existChat;
   }
 
   @override
@@ -73,20 +114,22 @@ class _FindScreenState extends State<FindScreen> {
             SizedBox(
               height: 20,
             ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormWidget("Add user link", controller,
-                        TextInputAction.done, false, (val) {}),
-                  ),
-                  FlatButton(
-                    child: Text("find"),
-                    textColor: Theme.of(context).primaryColor,
-                    onPressed: _findFriend,
-                  )
-                ],
-              ),
-            SizedBox(height: 15,),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormWidget("Add user link", controller,
+                      TextInputAction.done, false, (val) {}),
+                ),
+                FlatButton(
+                  child: Text("find"),
+                  textColor: Theme.of(context).primaryColor,
+                  onPressed: _findFriend,
+                )
+              ],
+            ),
+            SizedBox(
+              height: 15,
+            ),
             if (findStatus == FindStatus.SUCCESS)
               Center(
                 child: Column(
@@ -124,17 +167,7 @@ class _FindScreenState extends State<FindScreen> {
                           ),
                         ),
                         color: Theme.of(context).accentColor,
-                        onPressed: () {
-                          FirebaseFirestore.instance.collection("Chats").add({
-                            "users": [
-                              FirebaseAuth.instance.currentUser.uid,
-                              foundUserUid
-                            ],
-                            "receivedUsername":foundUsername,
-                            "receivedUserUid": foundUserUid,
-                          }).then((value) => Navigator.of(context).pushNamed(ConversationScreen.ROUTE_NAME,
-                          arguments: value.id));
-                        },
+                        onPressed: createChat,
                       ),
                     )
                   ],
