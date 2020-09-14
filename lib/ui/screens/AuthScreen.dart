@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:sarahah_chat/models/UserInformation.dart';
 import 'package:sarahah_chat/ui/widgets/TextFormWidget.dart';
 
@@ -41,6 +42,7 @@ class _AuthCardState extends State<AuthCard> {
   var isLoading = false;
   var expand = false;
   var isLogin = true;
+  String userImage;
 
   void changeCardHeight(bool changeExpand) {
     if (expand != changeExpand)
@@ -69,8 +71,12 @@ class _AuthCardState extends State<AuthCard> {
       else {
         final authUser = await _authInstance.createUserWithEmailAndPassword(
             email: _emailController.text, password: _passwordController.text);
-        final user = UserInformation(_userNameController.text,
-            _emailController.text, authUser.user.uid, "","${_userNameController.text}@${authUser.user.uid.substring(0,6)}.sarhah");
+        final user = UserInformation(
+            _userNameController.text,
+            _emailController.text,
+            authUser.user.uid,
+            "",
+            "${_userNameController.text}@${authUser.user.uid.substring(0, 6)}.sarhah");
         await FirebaseFirestore.instance
             .collection("Users")
             .doc(user.uid)
@@ -85,6 +91,39 @@ class _AuthCardState extends State<AuthCard> {
     setState(() {
       isLogin = !isLogin;
     });
+    changeCardHeight(true);
+  }
+
+  void pickImage(ImageSource selectedSource) {
+    ImagePicker.platform.pickImage(source: selectedSource).then((value) {
+      if (value == null) return;
+      print(value);
+
+    });
+  }
+
+  void chooseImage() {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text("Pick Image"),
+              actions: [
+                FlatButton(
+                  child: Text("From Camera"),
+                  onPressed: () {
+                    pickImage(ImageSource.camera);
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+                FlatButton(
+                  child: Text("From Gallery"),
+                  onPressed: () {
+                    pickImage(ImageSource.gallery);
+                    Navigator.of(ctx).pop();
+                  },
+                )
+              ],
+            ));
   }
 
   void _showErrorDialog() {
@@ -110,8 +149,8 @@ class _AuthCardState extends State<AuthCard> {
   Widget build(BuildContext context) {
     final deviceSize = MediaQuery.of(context).size;
     return Container(
-      height: expand ? deviceSize.height / 2 : 390,
-      width: deviceSize.width*.80,
+      height: expand ? deviceSize.height * .85 : 400,
+      width: deviceSize.width * .80,
       alignment: Alignment.center,
       child: Card(
         elevation: 6,
@@ -122,6 +161,13 @@ class _AuthCardState extends State<AuthCard> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  if (!isLogin)
+                    GestureDetector(
+                      child: CircleAvatar(
+                        radius: 60,
+                      ),
+                      onTap: chooseImage,
+                    ),
                   TextFormWidget(
                     "Email:",
                     _emailController,
