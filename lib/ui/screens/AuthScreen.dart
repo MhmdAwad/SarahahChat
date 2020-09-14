@@ -70,7 +70,7 @@ class _AuthCardState extends State<AuthCard> {
         final authUser = await _authInstance.createUserWithEmailAndPassword(
             email: _emailController.text, password: _passwordController.text);
         final user = UserInformation(_userNameController.text,
-            _emailController.text, authUser.user.uid, "");
+            _emailController.text, authUser.user.uid, "","${_userNameController.text}@${authUser.user.uid.substring(0,6)}.sarhah");
         await FirebaseFirestore.instance
             .collection("Users")
             .doc(user.uid)
@@ -111,7 +111,7 @@ class _AuthCardState extends State<AuthCard> {
     final deviceSize = MediaQuery.of(context).size;
     return Container(
       height: expand ? deviceSize.height / 2 : 390,
-      width: 360,
+      width: deviceSize.width*.80,
       alignment: Alignment.center,
       child: Card(
         elevation: 6,
@@ -204,7 +204,6 @@ class _AuthCardState extends State<AuthCard> {
           ),
         ),
       ),
-//      ),
     );
   }
 }

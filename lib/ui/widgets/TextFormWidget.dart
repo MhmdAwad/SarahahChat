@@ -5,10 +5,10 @@ class TextFormWidget extends StatelessWidget {
   final TextEditingController controller;
   final Function validate;
   final TextInputAction action;
-  final bool                    obscureText;
+  final bool obscureText;
 
-
-  TextFormWidget(this.labelText, this.controller, this.action,this.obscureText,this.validate);
+  TextFormWidget(this.labelText, this.controller, this.action, this.obscureText,
+      this.validate);
 
   @override
   Widget build(BuildContext context) {
