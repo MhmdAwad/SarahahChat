@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sarahah_chat/ui/widgets/TextFormWidget.dart';
@@ -16,7 +17,7 @@ class _FindScreenState extends State<FindScreen> {
   FindStatus findStatus = FindStatus.FAILED;
   String foundUsername = "";
   String foundUserImage = "";
-  String foundUserUid ="";
+  String foundUserUid = "";
 
   void _changeLoading(status) {
     setState(() {
@@ -55,6 +56,7 @@ class _FindScreenState extends State<FindScreen> {
       } else {
         foundUsername = value.docs[0].data()['username'];
         foundUserUid = value.docs[0].data()['uid'];
+        foundUserImage = value.docs[0].data()['userImage'];
         _changeLoading(FindStatus.SUCCESS);
       }
     });
@@ -67,7 +69,9 @@ class _FindScreenState extends State<FindScreen> {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            if (findStatus != FindStatus.SUCCESS)
+            SizedBox(
+              height: 20,
+            ),
               Row(
                 children: [
                   Expanded(
@@ -75,50 +79,63 @@ class _FindScreenState extends State<FindScreen> {
                         TextInputAction.done, false, (val) {}),
                   ),
                   FlatButton(
-                    child: Text("check"),
+                    child: Text("find"),
                     textColor: Theme.of(context).primaryColor,
                     onPressed: _findFriend,
                   )
                 ],
               ),
+            SizedBox(height: 15,),
             if (findStatus == FindStatus.SUCCESS)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  CircleAvatar(
-                    radius: 60,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    foundUsername,
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.black,
+              Center(
+                child: Column(
+                  children: [
+                    CircleAvatar(
+                      radius: 60,
+                      backgroundImage: NetworkImage(foundUserImage),
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  FlatButton(
-                    child: Text("cancel"),
-                    textColor: Colors.red,
-                    onPressed: () => _changeLoading(FindStatus.FAILED),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                      child: Text("Chat",style: TextStyle(color: Colors.white),),
-                      color: Theme.of(context).accentColor,
-                      onPressed: (){
-                        FirebaseFirestore.instance.collection("Chats").add({
-                          "users":[FirebaseAuth.instance.currentUser.uid, foundUserUid],
-
-                        }).then((value) => print("SS ${value.id}  == ${value.path}"));
-                      },
+                    SizedBox(
+                      height: 10,
                     ),
-                  )
-                ],
+                    Text(
+                      foundUsername,
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    FlatButton(
+                      child: Text("cancel"),
+                      textColor: Colors.red,
+                      onPressed: () => _changeLoading(FindStatus.FAILED),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: RaisedButton(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
+                        child: Padding(
+                          padding: const EdgeInsets.all(15.0),
+                          child: Text(
+                            "CHAT NOW",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        color: Theme.of(context).accentColor,
+                        onPressed: () {
+                          FirebaseFirestore.instance.collection("Chats").add({
+                            "users": [
+                              FirebaseAuth.instance.currentUser.uid,
+                              foundUserUid
+                            ],
+                          }).then((value) =>
+                              print("SS ${value.id}  == ${value.path}"));
+                        },
+                      ),
+                    )
+                  ],
+                ),
               )
           ],
         ),

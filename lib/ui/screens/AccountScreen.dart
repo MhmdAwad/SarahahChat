@@ -52,6 +52,7 @@ class _AccountScreenState extends State<AccountScreen> {
               )
             : Center(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
                       height: 20,
@@ -61,19 +62,19 @@ class _AccountScreenState extends State<AccountScreen> {
                       backgroundImage: NetworkImage(userImage),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                     Text(
                       username,
                       style: TextStyle(color: Colors.black, fontSize: 18),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                     Text(userMail,
                         style: TextStyle(color: Colors.black, fontSize: 18)),
                     SizedBox(
-                      height: 10,
+                      height: 20,
                     ),
                     GestureDetector(
                       child: Text(
