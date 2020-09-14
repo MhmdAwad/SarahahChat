@@ -92,7 +92,6 @@ class _AuthCardState extends State<AuthCard> {
   Future<String> _uploadUserImage(String uid) async{
     if(userImage == null)
       return "";
-
     final ref = FirebaseStorage.instance.ref().child("users").child("$uid.jpg");
     await ref.putFile(userImage).onComplete;
     final url = await ref.getDownloadURL();
@@ -109,8 +108,6 @@ class _AuthCardState extends State<AuthCard> {
     });
     changeCardHeight(true);
   }
-
-
 
   void _showErrorDialog() {
     showDialog(

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sarahah_chat/ui/screens/AccountScreen.dart';
 import 'package:sarahah_chat/ui/screens/ChatScreen.dart';
 import 'package:sarahah_chat/ui/screens/FindScreen.dart';
 
@@ -32,6 +33,18 @@ class _BottomNavItemState extends State<BottomNavItem> {
                 child: Container(
                   child: Row(
                     children: [
+                      Icon(Icons.account_circle),
+                      SizedBox(width: 10,),
+                      Text("Account")
+                    ],
+                  ),
+                ),
+                value: "account",
+              ),
+              DropdownMenuItem(
+                child: Container(
+                  child: Row(
+                    children: [
                       Icon(Icons.exit_to_app),
                       SizedBox(width: 10,),
                       Text("Logout")
@@ -40,10 +53,15 @@ class _BottomNavItemState extends State<BottomNavItem> {
                 ),
                 value: "logout",
               ),
+
             ],
             onChanged: (val){
-              if(val == "logout")
-                FirebaseAuth.instance.signOut();
+              switch(val){
+                case "logout":FirebaseAuth.instance.signOut();
+                break;
+                case "account": Navigator.of(context).pushNamed(AccountScreen.ROUTE_NAME);
+              }
+
             },
           ),
           SizedBox(width: 10,),
