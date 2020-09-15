@@ -18,12 +18,14 @@ class Messages extends StatelessWidget {
             return Center(
               child: CircularProgressIndicator(),
             );
+          final docs = snapshot.data.docs;
           return  ListView.builder(
               reverse: true,
               itemBuilder: (_, i) =>
                   MessageBubble(
-                      snapshot.data.docs[i].data()[TEXT],
-                      snapshot.data.docs[i].data()[SENDER] ==
+                      docs[i].data()[TEXT],
+                      docs[i].data()[TIME],
+                      docs[i].data()[SENDER] ==
                           FirebaseAuth.instance.currentUser.uid),
               itemCount: snapshot.data.docs.length ?? 0,
           );

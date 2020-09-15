@@ -71,7 +71,7 @@ class _AuthCardState extends State<AuthCard> {
             userEmail,
             authUser.user.uid,
             await _uploadUserImage(authUser.user.uid, userImage),
-            "$userName@${authUser.user.uid.substring(0, 6)}.sarhah");
+            "${userEmail.split("@")[0].trim()}@${authUser.user.uid.substring(0, 6)}.sarhah");
         await FirebaseFirestore.instance
             .collection("Users")
             .doc(user.uid)

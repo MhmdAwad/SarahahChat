@@ -18,7 +18,7 @@ class ChatItemWidget extends StatelessWidget {
             ID:chatID,
             NAME:chatName
           }),
-      leading: CircleAvatar(),
+      leading: CircleAvatar(child: Image.asset("assets/images/incoginto.png",),),
       title: Text(chatName),
       subtitle: Text(lastMsg),
     );
