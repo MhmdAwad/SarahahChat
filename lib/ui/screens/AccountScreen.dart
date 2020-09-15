@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sarahah_chat/utils/Constants.dart';
+import 'package:share/share.dart';
 
 class AccountScreen extends StatefulWidget {
   static const ROUTE_NAME = "AccountScreen";
@@ -60,7 +61,7 @@ class _AccountScreenState extends State<AccountScreen> {
                     ),
                     CircleAvatar(
                       radius: 60,
-                      backgroundImage: NetworkImage(userImage),
+                      child:userImage.endsWith("jpg")? NetworkImage(userImage): Image.asset("assets/images/incoginto.png",),
                     ),
                     SizedBox(
                       height: 20,
@@ -77,15 +78,23 @@ class _AccountScreenState extends State<AccountScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    GestureDetector(
-                      child: Text(
-                        userLink,
-                        style: TextStyle(color: Colors.blue, fontSize: 16),
-                      ),
-                      onLongPress: () {
-                        Clipboard.setData(ClipboardData(text: userLink));
-                        _showSnackBar();
-                      },
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          child: Text(
+                            userLink,
+                            style: TextStyle(color: Colors.blue, fontSize: 16),
+                          ),
+                          onLongPress: () {
+                            Clipboard.setData(ClipboardData(text: userLink));
+                            _showSnackBar();
+                          },
+                        ),
+                        IconButton(icon: Icon(Icons.share),
+                        onPressed: ()=>Share.share(userLink, subject: 'Look this is my Sarahah Chat Link')
+                          ,)
+                      ],
                     ),
                   ],
                 ),
