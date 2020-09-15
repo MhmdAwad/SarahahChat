@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:sarahah_chat/ui/screens/ConversationScreen.dart';
 import 'package:sarahah_chat/ui/widgets/TextFormWidget.dart';
 
-enum FindStatus { FAILED, SUCCESS }
+enum FindStatus { FAILED, SUCCESS, LOADING }
 
 class FindScreen extends StatefulWidget {
   @override
@@ -46,6 +46,8 @@ class _FindScreenState extends State<FindScreen> {
   }
 
   void _findFriend() {
+    _changeLoading(FindStatus.LOADING);
+    FocusScope.of(context).unfocus();
     FirebaseFirestore.instance
         .collection("Users")
         .where("userLink", isEqualTo: controller.text)
@@ -70,31 +72,31 @@ class _FindScreenState extends State<FindScreen> {
     }
     final myUid = FirebaseAuth.instance.currentUser.uid;
     String existChat = await checkChatExist();
-    if(existChat != null){
-      Navigator.of(context).pushNamed(ConversationScreen.ROUTE_NAME, arguments: existChat);
+    if (existChat != null) {
+      Navigator.of(context)
+          .pushNamed(ConversationScreen.ROUTE_NAME, arguments: existChat);
       return;
     }
     FirebaseFirestore.instance.collection("Chats").add({
-      "users": [
-        myUid,
-        foundUserUid
-      ],
-      "receivedUsername":foundUsername,
+      "users": [myUid, foundUserUid],
+      "receivedUsername": foundUsername,
       "receivedUserUid": foundUserUid,
-    }).then((value) => Navigator.of(context).pushNamed(ConversationScreen.ROUTE_NAME,
-        arguments: value.id));
+    }).then((value) => Navigator.of(context).pushNamed(
+        ConversationScreen.ROUTE_NAME,
+        arguments: {'id': value.id, 'name': foundUsername}));
   }
 
-  Future<String> checkChatExist()async{
+  Future<String> checkChatExist() async {
     String existChat;
     final data = await FirebaseFirestore.instance
         .collection("Chats")
         .where(
-      "users",
-      arrayContains: FirebaseAuth.instance.currentUser.uid,
-    ).get();
+          "users",
+          arrayContains: FirebaseAuth.instance.currentUser.uid,
+        )
+        .get();
 
-    for(var element in data.docs){
+    for (var element in data.docs) {
       if (element.data()['users'][0] == foundUserUid ||
           element.data()['users'][1] == foundUserUid) {
         existChat = element.id;
@@ -119,13 +121,18 @@ class _FindScreenState extends State<FindScreen> {
                 children: [
                   Expanded(
                     child: TextFormWidget("Add user link", controller,
-                        TextInputAction.done, false, null),
+                        TextInputAction.search, false, null),
                   ),
-                  FlatButton(
-                    child: Text("find"),
-                    textColor: Theme.of(context).primaryColor,
-                    onPressed: _findFriend,
-                  )
+                  findStatus == FindStatus.LOADING
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: CircularProgressIndicator(),
+                        )
+                      : IconButton(
+                          icon: Icon(Icons.search,
+                              color: Theme.of(context).primaryColor),
+                          onPressed: _findFriend,
+                        )
                 ],
               ),
               SizedBox(
