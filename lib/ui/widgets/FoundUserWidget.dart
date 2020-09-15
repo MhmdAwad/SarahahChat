@@ -6,16 +6,22 @@ class FoundUserWidget extends StatelessWidget {
   final String foundUsername;
   final Function createChat;
   final Function changeStatus;
-  FoundUserWidget(this.foundUserImage, this.foundUsername, this.createChat, this.changeStatus);
+
+  FoundUserWidget(this.foundUserImage, this.foundUsername, this.createChat,
+      this.changeStatus);
 
   @override
   Widget build(BuildContext context) {
-    return  Center(
+    return Center(
       child: Column(
         children: [
           CircleAvatar(
             radius: 60,
-            backgroundImage: NetworkImage(foundUserImage),
+            backgroundImage: foundUserImage.startsWith("http")
+                ? NetworkImage(foundUserImage)
+                : AssetImage(
+                    "assets/images/person.png",
+                  ),
           ),
           SizedBox(
             height: 10,

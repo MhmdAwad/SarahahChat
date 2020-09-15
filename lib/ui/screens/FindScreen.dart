@@ -119,15 +119,15 @@ class _FindScreenState extends State<FindScreen> {
               ),
               FindUserWidget(findStatus, _findFriend),
               SizedBox(
-                height: 15,
+                height: 20,
               ),
-              if (findStatus == FindStatus.SUCCESS)
+              findStatus == FindStatus.SUCCESS?
                 FoundUserWidget(
                   foundUserImage,
                   foundUsername,
                   createChat,
                   _changeLoading,
-                )
+                ):Center(child: Text("No user link added yet!"),heightFactor: 30,)
             ],
           ),
         ),
