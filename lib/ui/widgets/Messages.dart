@@ -6,7 +6,6 @@ import 'MessageBubble.dart';
 
 class Messages extends StatelessWidget {
   final fireStore;
-
   Messages(this.fireStore);
 
   @override
@@ -18,8 +17,7 @@ class Messages extends StatelessWidget {
             return Center(
               child: CircularProgressIndicator(),
             );
-          return Expanded(
-            child: ListView.builder(
+          return  ListView.builder(
               reverse: true,
               itemBuilder: (_, i) =>
                   MessageBubble(
@@ -27,7 +25,6 @@ class Messages extends StatelessWidget {
                       snapshot.data.docs[i].data()['sender'] ==
                           FirebaseAuth.instance.currentUser.uid),
               itemCount: snapshot.data.docs.length ?? 0,
-            ),
           );
         });
   }

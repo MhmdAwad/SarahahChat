@@ -17,10 +17,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   @override
   void initState() {
-    fireStore = FirebaseFirestore.instance
-        .collection("Chats")
-        .doc(conversationID)
-        .collection("messages");
+
     super.initState();
   }
 
@@ -29,6 +26,10 @@ class _ConversationScreenState extends State<ConversationScreen> {
     Map<String, dynamic> args = ModalRoute.of(context).settings.arguments;
     conversationID = args['id'];
     conversationName = args['name'];
+    fireStore = FirebaseFirestore.instance
+        .collection("Chats")
+        .doc(conversationID)
+        .collection("messages");
     super.didChangeDependencies();
   }
 
@@ -42,7 +43,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       appBar: AppBar(title: Text(conversationName)),
       body: Column(
         children: [
-          Messages(fireStore),
+          Expanded(child: Messages(fireStore)),
           NewMessage(addNewMessage),
         ],
       ),

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:sarahah_chat/ui/screens/ConversationScreen.dart';
+import 'package:sarahah_chat/ui/widgets/ChatItemWidget.dart';
 import 'package:sarahah_chat/ui/widgets/Constants.dart';
 
 class ChatScreen extends StatelessWidget {
@@ -20,8 +20,7 @@ class ChatScreen extends StatelessWidget {
             .where(
               "users",
               arrayContains: myUid,
-            )
-            .snapshots(),
+            ).snapshots(),
         builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting)
             return Center(
@@ -30,21 +29,11 @@ class ChatScreen extends StatelessWidget {
           final docs = snapshot.data.docs;
           return ListView.builder(
             itemBuilder: (_, i) => Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ListTile(
-                onTap: () => Navigator.of(context).pushNamed(
-                    ConversationScreen.ROUTE_NAME,
-                    arguments: {
-                      "id":docs[i].id,
-                      "name":docs[i].data()[RECEIVED_USERNAME]
-                    }),
-                leading: CircleAvatar(),
-                title: Text(_conversationName(
-                  docs[i].data()[RECEIVED_USERNAME],
-                  docs[i].data()[RECEIVED_USER_UID],
-                )),
-              ),
-            ),
+                padding: const EdgeInsets.all(8.0),
+                child: ChatItemWidget(
+                    docs[i].id,
+                    _conversationName(docs[i].data()[RECEIVED_USERNAME],
+                        docs[i].data()[RECEIVED_USER_UID]))),
             itemCount: snapshot.data.docs.length ?? 0,
           );
         });
