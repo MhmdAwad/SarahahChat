@@ -12,6 +12,7 @@ class AuthFormWidget extends StatefulWidget {
     String userName,
     File userImage,
   ) authentication;
+
   final bool isLogin;
   final bool isLoading;
   final Function _changeLoginStatus;

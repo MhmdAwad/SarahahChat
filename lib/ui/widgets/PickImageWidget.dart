@@ -55,14 +55,22 @@ class _PickImageWidgetState extends State<PickImageWidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      child: CircleAvatar(
-        radius: 60,
-        backgroundImage: userImage == null
-            ? null
-            : FileImage(
-                userImage,
-              ),
-      ),
+      child: Stack(
+        children: [CircleAvatar(
+          radius: 60,
+          backgroundColor: Colors.grey,
+          backgroundImage: userImage == null
+              ? null
+              : FileImage(
+                  userImage,
+                ),
+        ),
+          Positioned(
+            right: 4,
+            bottom: 4,
+            child: Icon(Icons.add_a_photo, color: Colors.black87,),
+          )
+      ]),
       onTap: chooseImage,
     );
   }
