@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:sarahah_chat/ui/screens/ConversationScreen.dart';
 import 'package:sarahah_chat/ui/widgets/FindUserWidger.dart';
 import 'package:sarahah_chat/ui/widgets/FoundUserWidget.dart';
+import 'package:sarahah_chat/utils/Constants.dart';
 import 'package:sarahah_chat/utils/FindStatus.dart';
 
 class FindScreen extends StatefulWidget {
@@ -48,17 +49,17 @@ class _FindScreenState extends State<FindScreen> {
     _changeLoading(FindStatus.LOADING);
     FocusScope.of(context).unfocus();
     FirebaseFirestore.instance
-        .collection("Users")
-        .where("userLink", isEqualTo: userLink)
+        .collection(USERS)
+        .where(USERS_LINK, isEqualTo: userLink)
         .get()
         .then((value) {
       if (value.docs.length == 0) {
         _changeLoading(FindStatus.FAILED);
         _showErrorDialog("user link in invalid.");
       } else {
-        foundUsername = value.docs[0].data()['username'];
-        foundUserUid = value.docs[0].data()['uid'];
-        foundUserImage = value.docs[0].data()['userImage'];
+        foundUsername = value.docs[0].data()[USERNAME];
+        foundUserUid = value.docs[0].data()[UID];
+        foundUserImage = value.docs[0].data()[USER_IMAGE];
         _changeLoading(FindStatus.SUCCESS);
       }
     });
@@ -76,28 +77,28 @@ class _FindScreenState extends State<FindScreen> {
           .pushNamed(ConversationScreen.ROUTE_NAME, arguments: existChat);
       return;
     }
-    FirebaseFirestore.instance.collection("Chats").add({
-      "users": [myUid, foundUserUid],
-      "receivedUsername": foundUsername,
-      "receivedUserUid": foundUserUid,
+    FirebaseFirestore.instance.collection(CHATS).add({
+      USERS: [myUid, foundUserUid],
+      RECEIVED_USERNAME: foundUsername,
+      RECEIVED_USER_UID: foundUserUid,
     }).then((value) => Navigator.of(context).pushNamed(
         ConversationScreen.ROUTE_NAME,
-        arguments: {'id': value.id, 'name': foundUsername}));
+        arguments: {ID: value.id, NAME: foundUsername}));
   }
 
   Future<String> checkChatExist() async {
     String existChat;
     final data = await FirebaseFirestore.instance
-        .collection("Chats")
+        .collection(CHATS)
         .where(
-          "users",
+          USERS,
           arrayContains: FirebaseAuth.instance.currentUser.uid,
         )
         .get();
 
     for (var element in data.docs) {
-      if (element.data()['users'][0] == foundUserUid ||
-          element.data()['users'][1] == foundUserUid) {
+      if (element.data()[USERS][0] == foundUserUid ||
+          element.data()[USERS][1] == foundUserUid) {
         existChat = element.id;
         break;
       }

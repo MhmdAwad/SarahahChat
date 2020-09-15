@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sarahah_chat/ui/screens/AccountScreen.dart';
 import 'package:sarahah_chat/ui/screens/ChatScreen.dart';
 import 'package:sarahah_chat/ui/screens/FindScreen.dart';
+import 'package:sarahah_chat/utils/Constants.dart';
 
 class BottomNavItem extends StatefulWidget {
   @override
@@ -24,7 +25,7 @@ class _BottomNavItemState extends State<BottomNavItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_widgetsList[_widgetIndex]["title"]),
+        title: Text(_widgetsList[_widgetIndex][TITLE]),
         actions: [
           DropdownButtonHideUnderline(
             child: DropdownButton(
@@ -69,7 +70,7 @@ class _BottomNavItemState extends State<BottomNavItem> {
           SizedBox(width: 10,),
         ],
       ),
-      body: _widgetsList[_widgetIndex]["body"],
+      body: _widgetsList[_widgetIndex][BODY],
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectScreen,
         selectedItemColor: Colors.white,

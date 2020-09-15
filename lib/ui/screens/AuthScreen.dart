@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:sarahah_chat/models/UserInformation.dart';
 import 'package:sarahah_chat/ui/widgets/PickImageWidget.dart';
 import 'package:sarahah_chat/ui/widgets/TextFormWidget.dart';
+import 'package:sarahah_chat/utils/Constants.dart';
 
 class AuthScreen extends StatelessWidget {
   @override
@@ -92,7 +93,7 @@ class _AuthCardState extends State<AuthCard> {
   Future<String> _uploadUserImage(String uid) async{
     if(userImage == null)
       return "";
-    final ref = FirebaseStorage.instance.ref().child("users").child("$uid.jpg");
+    final ref = FirebaseStorage.instance.ref().child(USERS).child("$uid.jpg");
     await ref.putFile(userImage).onComplete;
     final url = await ref.getDownloadURL();
     return url;

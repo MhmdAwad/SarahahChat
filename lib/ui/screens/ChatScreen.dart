@@ -2,23 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sarahah_chat/ui/widgets/ChatItemWidget.dart';
-import 'package:sarahah_chat/ui/widgets/Constants.dart';
+import 'package:sarahah_chat/utils/Constants.dart';
 
 class ChatScreen extends StatelessWidget {
   static const ROUTE_NAME = "ChatScreen";
   final myUid = FirebaseAuth.instance.currentUser.uid;
 
   String _conversationName(receivedName, receivedUid) {
-    return receivedUid == myUid ? "Hidden User" : receivedName;
+    return receivedUid == myUid ? HIDDEN_USERS : receivedName;
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
         stream: FirebaseFirestore.instance
-            .collection("Chats")
+            .collection(CHATS)
             .where(
-              "users",
+              USERS,
               arrayContains: myUid,
             ).snapshots(),
         builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -33,7 +33,8 @@ class ChatScreen extends StatelessWidget {
                 child: ChatItemWidget(
                     docs[i].id,
                     _conversationName(docs[i].data()[RECEIVED_USERNAME],
-                        docs[i].data()[RECEIVED_USER_UID]))),
+                        docs[i].data()[RECEIVED_USER_UID]),
+                docs[i].data()[LAST_MSG])),
             itemCount: snapshot.data.docs.length ?? 0,
           );
         });

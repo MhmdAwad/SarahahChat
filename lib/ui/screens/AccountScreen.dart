@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sarahah_chat/utils/Constants.dart';
 
 class AccountScreen extends StatefulWidget {
   static const ROUTE_NAME = "AccountScreen";
@@ -25,17 +26,17 @@ class _AccountScreenState extends State<AccountScreen> {
         .doc(FirebaseAuth.instance.currentUser.uid)
         .get()
         .then((value) {
-      userLink = value.data()['userLink'];
-      username = value.data()['username'];
-      userImage = value.data()['userImage'];
-      userMail = value.data()['email'];
+      userLink = value.data()[USERS_LINK];
+      username = value.data()[USERNAME];
+      userImage = value.data()[USER_IMAGE];
+      userMail = value.data()[EMAIL];
       setState(() {
         isLoading = false;
       });
     });
     super.initState();
   }
-  void showSnackbar(){
+  void _showSnackBar(){
     _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Copied."),));
   }
 
@@ -83,7 +84,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       ),
                       onLongPress: () {
                         Clipboard.setData(ClipboardData(text: userLink));
-                        showSnackbar();
+                        _showSnackBar();
                       },
                     ),
                   ],
