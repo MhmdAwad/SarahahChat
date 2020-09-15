@@ -37,14 +37,17 @@ class _AccountScreenState extends State<AccountScreen> {
     });
     super.initState();
   }
-  void _showSnackBar(){
-    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("Copied."),));
+
+  void _showSnackBar() {
+    _scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text("Copied."),
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
+        key: _scaffoldKey,
         appBar: AppBar(
           title: Text("Account"),
         ),
@@ -61,7 +64,11 @@ class _AccountScreenState extends State<AccountScreen> {
                     ),
                     CircleAvatar(
                       radius: 60,
-                      child:userImage.endsWith("jpg")? NetworkImage(userImage): Image.asset("assets/images/incoginto.png",),
+                      backgroundImage: userImage.startsWith("http")
+                          ? NetworkImage(userImage)
+                          : AssetImage(
+                              "assets/images/incoginto.png",
+                            ),
                     ),
                     SizedBox(
                       height: 20,
@@ -91,9 +98,11 @@ class _AccountScreenState extends State<AccountScreen> {
                             _showSnackBar();
                           },
                         ),
-                        IconButton(icon: Icon(Icons.share),
-                        onPressed: ()=>Share.share(userLink, subject: 'Look this is my Sarahah Chat Link')
-                          ,)
+                        IconButton(
+                          icon: Icon(Icons.share),
+                          onPressed: () => Share.share(userLink,
+                              subject: 'Look this is my Sarahah Chat Link'),
+                        )
                       ],
                     ),
                   ],
