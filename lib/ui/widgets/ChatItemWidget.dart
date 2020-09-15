@@ -17,8 +17,8 @@ class ChatItemWidget extends StatelessWidget {
           ConversationScreen.ROUTE_NAME,
           arguments: {ID: chatID, NAME: chatName}),
       leading: CircleAvatar(
-        child: Image.asset(
-          "assets/images/incoginto.png",
+        backgroundImage: AssetImage(
+          "assets/images/${chatName == HIDDEN_USERS?"incoginto":"person"}.png",
         ),
         radius: 30,
       ),
@@ -27,7 +27,7 @@ class ChatItemWidget extends StatelessWidget {
         style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
       subtitle: Text(lastMsg),
-      trailing: unseenMessages == 0
+      trailing: unseenMessages == 0 || unseenMessages == null
           ? Container(
               width: 0,
               height: 0,
