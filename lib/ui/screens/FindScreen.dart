@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sarahah_chat/ui/screens/ConversationScreen.dart';
-import 'package:sarahah_chat/ui/widgets/TextFormWidget.dart';
-
-enum FindStatus { FAILED, SUCCESS, LOADING }
+import 'package:sarahah_chat/ui/widgets/FindUserWidger.dart';
+import 'package:sarahah_chat/ui/widgets/FoundUserWidget.dart';
+import 'package:sarahah_chat/utils/FindStatus.dart';
 
 class FindScreen extends StatefulWidget {
   @override
@@ -14,7 +14,6 @@ class FindScreen extends StatefulWidget {
 }
 
 class _FindScreenState extends State<FindScreen> {
-  final controller = TextEditingController();
   FindStatus findStatus = FindStatus.FAILED;
   String foundUsername = "";
   String foundUserImage = "";
@@ -45,12 +44,12 @@ class _FindScreenState extends State<FindScreen> {
     );
   }
 
-  void _findFriend() {
+  void _findFriend(userLink) {
     _changeLoading(FindStatus.LOADING);
     FocusScope.of(context).unfocus();
     FirebaseFirestore.instance
         .collection("Users")
-        .where("userLink", isEqualTo: controller.text)
+        .where("userLink", isEqualTo: userLink)
         .get()
         .then((value) {
       if (value.docs.length == 0) {
@@ -117,69 +116,16 @@ class _FindScreenState extends State<FindScreen> {
               SizedBox(
                 height: 10,
               ),
-              Row(
-                children: [
-                  Expanded(
-                    child: TextFormWidget("Add user link", controller,
-                        TextInputAction.search, false, null),
-                  ),
-                  findStatus == FindStatus.LOADING
-                      ? Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircularProgressIndicator(),
-                        )
-                      : IconButton(
-                          icon: Icon(Icons.search,
-                              color: Theme.of(context).primaryColor),
-                          onPressed: _findFriend,
-                        )
-                ],
-              ),
+              FindUserWidget(findStatus, _findFriend),
               SizedBox(
                 height: 15,
               ),
               if (findStatus == FindStatus.SUCCESS)
-                Center(
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundImage: NetworkImage(foundUserImage),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        foundUsername,
-                        style: TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      FlatButton(
-                        child: Text("cancel"),
-                        textColor: Colors.red,
-                        onPressed: () => _changeLoading(FindStatus.FAILED),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                        child: RaisedButton(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Text(
-                              "CHAT NOW",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                          color: Theme.of(context).accentColor,
-                          onPressed: createChat,
-                        ),
-                      )
-                    ],
-                  ),
+                FoundUserWidget(
+                  foundUserImage,
+                  foundUsername,
+                  createChat,
+                  _changeLoading,
                 )
             ],
           ),

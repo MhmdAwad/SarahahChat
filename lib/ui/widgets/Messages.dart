@@ -31,5 +31,5 @@ class Messages extends StatelessWidget {
           );
         });
   }
-}
+  }
 
