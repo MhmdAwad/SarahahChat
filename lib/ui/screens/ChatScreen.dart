@@ -27,6 +27,8 @@ class ChatScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           final docs = snapshot.data.docs;
+          if(docs.isEmpty)
+            return Center(child: Text("No chats yet! Add one now."),);
           return ListView.builder(
             itemBuilder: (_, i) => Padding(
                 padding: const EdgeInsets.all(8.0),
