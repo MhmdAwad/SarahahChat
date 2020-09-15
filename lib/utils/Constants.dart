@@ -17,3 +17,5 @@ const UID = 'uid';
 const USER_IMAGE ="userImage";
 const USERS_LINK = "userLink";
 const EMAIL = "email";
+const UNSEEN_MESSAGES = 'unseenMessages';
+const LAST_SENDER = "lastSender";

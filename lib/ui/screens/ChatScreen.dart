@@ -36,7 +36,8 @@ class ChatScreen extends StatelessWidget {
                     docs[i].id,
                     _conversationName(docs[i].data()[RECEIVED_USERNAME],
                         docs[i].data()[RECEIVED_USER_UID]),
-                docs[i].data()[LAST_MSG])),
+                docs[i].data()[LAST_MSG],
+                docs[i].data()[LAST_SENDER] == myUid?0: docs[i].data()[UNSEEN_MESSAGES])),
             itemCount: snapshot.data.docs.length ?? 0,
           );
         });

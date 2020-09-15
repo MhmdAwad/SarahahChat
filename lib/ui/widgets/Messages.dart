@@ -12,12 +12,13 @@ class Messages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: fireStore.orderBy(TIME, descending: true).snapshots(),
+        stream: fireStore.collection(MESSAGES).orderBy(TIME, descending: true).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting)
             return Center(
               child: CircularProgressIndicator(),
             );
+
           final docs = snapshot.data.docs;
           return  ListView.builder(
               reverse: true,
