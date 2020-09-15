@@ -23,72 +23,80 @@ class _BottomNavItemState extends State<BottomNavItem> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_widgetsList[_widgetIndex][TITLE]),
-        actions: [
-          DropdownButtonHideUnderline(
-            child: DropdownButton(
-              icon: Icon(Icons.more_vert, color: Colors.white,),
-              items: [
-                DropdownMenuItem(
-                  child: Container(
-                    child: Row(
-                      children: [
-                        Icon(Icons.account_circle),
-                        SizedBox(width: 10,),
-                        Text("Account")
-                      ],
+    return WillPopScope(
+      onWillPop: ()async{
+        if(_widgetIndex == 0)
+          return true;
+        _selectScreen(0);
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(_widgetsList[_widgetIndex][TITLE]),
+          actions: [
+            DropdownButtonHideUnderline(
+              child: DropdownButton(
+                icon: Icon(Icons.more_vert, color: Colors.white,),
+                items: [
+                  DropdownMenuItem(
+                    child: Container(
+                      child: Row(
+                        children: [
+                          Icon(Icons.account_circle),
+                          SizedBox(width: 10,),
+                          Text("Account")
+                        ],
+                      ),
                     ),
+                    value: "account",
                   ),
-                  value: "account",
-                ),
-                DropdownMenuItem(
-                  child: Container(
-                    child: Row(
-                      children: [
-                        Icon(Icons.exit_to_app),
-                        SizedBox(width: 10,),
-                        Text("Logout")
-                      ],
+                  DropdownMenuItem(
+                    child: Container(
+                      child: Row(
+                        children: [
+                          Icon(Icons.exit_to_app),
+                          SizedBox(width: 10,),
+                          Text("Logout")
+                        ],
+                      ),
                     ),
+                    value: "logout",
                   ),
-                  value: "logout",
-                ),
 
-              ],
-              onChanged: (val){
-                switch(val){
-                  case "logout":FirebaseAuth.instance.signOut();
-                  break;
-                  case "account": Navigator.of(context).pushNamed(AccountScreen.ROUTE_NAME);
-                }
+                ],
+                onChanged: (val){
+                  switch(val){
+                    case "logout":FirebaseAuth.instance.signOut();
+                    break;
+                    case "account": Navigator.of(context).pushNamed(AccountScreen.ROUTE_NAME);
+                  }
 
-              },
+                },
+              ),
             ),
-          ),
-          SizedBox(width: 10,),
-        ],
-      ),
-      body: _widgetsList[_widgetIndex][BODY],
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: _selectScreen,
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.black54,
-        currentIndex: _widgetIndex,
-        type: BottomNavigationBarType.shifting,
-        items: [
-          BottomNavigationBarItem(
-              backgroundColor: Theme.of(context).primaryColor,
-              icon: Icon(Icons.chat_bubble),
-              title: Text("Chats")
-          ),
-          BottomNavigationBarItem(
-              backgroundColor: Theme.of(context).primaryColor,
-              icon: Icon(Icons.person_add),
-              title: Text("Find")
-          ),
-        ],
+            SizedBox(width: 10,),
+          ],
+        ),
+        body: _widgetsList[_widgetIndex][BODY],
+        bottomNavigationBar: BottomNavigationBar(
+          onTap: _selectScreen,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.black54,
+          currentIndex: _widgetIndex,
+          type: BottomNavigationBarType.shifting,
+          items: [
+            BottomNavigationBarItem(
+                backgroundColor: Theme.of(context).primaryColor,
+                icon: Icon(Icons.chat_bubble),
+                title: Text("Chats")
+            ),
+            BottomNavigationBarItem(
+                backgroundColor: Theme.of(context).primaryColor,
+                icon: Icon(Icons.person_add),
+                title: Text("Find")
+            ),
+          ],
+        ),
       ),
     );
   }
