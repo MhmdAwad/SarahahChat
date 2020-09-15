@@ -108,72 +108,74 @@ class _FindScreenState extends State<FindScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormWidget("Add user link", controller,
-                      TextInputAction.done, false, (val) {}),
-                ),
-                FlatButton(
-                  child: Text("find"),
-                  textColor: Theme.of(context).primaryColor,
-                  onPressed: _findFriend,
-                )
-              ],
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            if (findStatus == FindStatus.SUCCESS)
-              Center(
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 60,
-                      backgroundImage: NetworkImage(foundUserImage),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      foundUsername,
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
+        padding: const EdgeInsets.all(8),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormWidget("Add user link", controller,
+                        TextInputAction.done, false, null),
+                  ),
+                  FlatButton(
+                    child: Text("find"),
+                    textColor: Theme.of(context).primaryColor,
+                    onPressed: _findFriend,
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              if (findStatus == FindStatus.SUCCESS)
+                Center(
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundImage: NetworkImage(foundUserImage),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                    FlatButton(
-                      child: Text("cancel"),
-                      textColor: Colors.red,
-                      onPressed: () => _changeLoading(FindStatus.FAILED),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text(
-                            "CHAT NOW",
-                            style: TextStyle(color: Colors.white),
-                          ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        foundUsername,
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
                         ),
-                        color: Theme.of(context).accentColor,
-                        onPressed: createChat,
+                        textAlign: TextAlign.center,
                       ),
-                    )
-                  ],
-                ),
-              )
-          ],
+                      FlatButton(
+                        child: Text("cancel"),
+                        textColor: Colors.red,
+                        onPressed: () => _changeLoading(FindStatus.FAILED),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30)),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              "CHAT NOW",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          color: Theme.of(context).accentColor,
+                          onPressed: createChat,
+                        ),
+                      )
+                    ],
+                  ),
+                )
+            ],
+          ),
         ),
       ),
     );

@@ -26,43 +26,45 @@ class _BottomNavItemState extends State<BottomNavItem> {
       appBar: AppBar(
         title: Text(_widgetsList[_widgetIndex]["title"]),
         actions: [
-          DropdownButton(
-            icon: Icon(Icons.more_vert, color: Colors.white,),
-            items: [
-              DropdownMenuItem(
-                child: Container(
-                  child: Row(
-                    children: [
-                      Icon(Icons.account_circle),
-                      SizedBox(width: 10,),
-                      Text("Account")
-                    ],
+          DropdownButtonHideUnderline(
+            child: DropdownButton(
+              icon: Icon(Icons.more_vert, color: Colors.white,),
+              items: [
+                DropdownMenuItem(
+                  child: Container(
+                    child: Row(
+                      children: [
+                        Icon(Icons.account_circle),
+                        SizedBox(width: 10,),
+                        Text("Account")
+                      ],
+                    ),
                   ),
+                  value: "account",
                 ),
-                value: "account",
-              ),
-              DropdownMenuItem(
-                child: Container(
-                  child: Row(
-                    children: [
-                      Icon(Icons.exit_to_app),
-                      SizedBox(width: 10,),
-                      Text("Logout")
-                    ],
+                DropdownMenuItem(
+                  child: Container(
+                    child: Row(
+                      children: [
+                        Icon(Icons.exit_to_app),
+                        SizedBox(width: 10,),
+                        Text("Logout")
+                      ],
+                    ),
                   ),
+                  value: "logout",
                 ),
-                value: "logout",
-              ),
 
-            ],
-            onChanged: (val){
-              switch(val){
-                case "logout":FirebaseAuth.instance.signOut();
-                break;
-                case "account": Navigator.of(context).pushNamed(AccountScreen.ROUTE_NAME);
-              }
+              ],
+              onChanged: (val){
+                switch(val){
+                  case "logout":FirebaseAuth.instance.signOut();
+                  break;
+                  case "account": Navigator.of(context).pushNamed(AccountScreen.ROUTE_NAME);
+                }
 
-            },
+              },
+            ),
           ),
           SizedBox(width: 10,),
         ],

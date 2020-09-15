@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:sarahah_chat/ui/screens/ConversationScreen.dart';
+import 'package:sarahah_chat/ui/widgets/Constants.dart';
 
 class ChatScreen extends StatelessWidget {
   static const ROUTE_NAME = "ChatScreen";
@@ -17,23 +18,24 @@ class ChatScreen extends StatelessWidget {
             arrayContains: myUid,
           )
           .snapshots(),
-      builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) => snapshot
-                  .connectionState ==
-              ConnectionState.waiting
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemBuilder: (_, i) => Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ListTile(
-                  onTap: () => Navigator.of(context).pushNamed(
-                      ConversationScreen.ROUTE_NAME,
-                      arguments: snapshot.data.docs[i].id),
-                  leading: CircleAvatar(),
-                  title: Text(snapshot.data.docs[i].data()['receivedUsername']),
+      builder: (_, AsyncSnapshot<QuerySnapshot> snapshot) =>
+          snapshot.connectionState == ConnectionState.waiting
+              ? Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                  itemBuilder: (_, i) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ListTile(
+                      onTap: () => Navigator.of(context).pushNamed(
+                          ConversationScreen.ROUTE_NAME,
+                          arguments: snapshot.data.docs[i].id),
+                      leading: CircleAvatar(),
+                      title: Text(snapshot.data.docs[i].data()[RECEIVED_USER_UID] == myUid
+                          ? "Hidden User"
+                      :snapshot.data.docs[i].data()[RECEIVED_USERNAME]),
+                    ),
+                  ),
+                  itemCount: snapshot.data.docs.length ?? 0,
                 ),
-              ),
-              itemCount: snapshot.data.docs.length ?? 0,
-            ),
     );
   }
 }
